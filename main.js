@@ -1,31 +1,30 @@
 const data = require('./DataRetriver');
-
+const formatter = require('./formatter');
 
 const xlsx = require('xlsx');
 
 
-var workBook = xlsx.utils.book_new() ;
 
 var jsonObjects= [] ; 
 var start = new Date();
 
-data.on('data',(doc)=>{
+data.then((results)=>{
+        results.forEach((result)=>{
+            console.log('inside for eacxh ');
+            let workBook = xlsx.utils.book_new() ; 
+            let workSheet = xlsx.utils.aoa_to_sheet(formatter(result)) ;
+           
+            xlsx.utils.book_append_sheet(workBook,workSheet,"RefNO-"+result._id);
+            xlsx.writeFile(workBook,'./outputFiles/'+result._id+'.xlsx');
+            
 
-    jsonObjects.push(doc._doc);
-   
+
+
+        });
+        
+        console.log('done writing !!');
+       
 });
 
-data.on('end',()=>{
-    var endOfProcess = new Date() - start ; 
-    console.info(' time for processing : %dms', endOfProcess)
-    var wrtieStart = new Date(); 
-    var worksheet = xlsx.utils.sheet_add_json(worksheet,jsonObjects);
-    xlsx.utils.book_append_sheet(workBook,worksheet,'client Data');
-    xlsx.writeFile(workBook,'data.xlsb');
-    console.log('completed writing !!');
-    var endOfWrite = new Date() - wrtieStart ; 
-    console.info('time for writing  %dms', endOfWrite)
-    console.log('total time %dms',new Date() - start);
-    
-});
+
 
