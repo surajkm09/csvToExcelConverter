@@ -43,7 +43,10 @@ var schema = mongoose.Schema({
   ProofType: String,
   isQuarterClosed: Boolean
 });
+
 var data = mongoose.model("data", schema, "data");
+
+
 var aggData = data.aggregate(
   [
     {
