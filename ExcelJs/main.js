@@ -9,6 +9,8 @@ var headerKeys = ['vendorName','vendorNumber','dept','quarter','year','claimType
 data.then((results)=>{
 
     results.forEach((result)=>{
+
+        result=formater.sanitizeResult(result);
         var workbook = new Excel.Workbook();
         var worksheet = workbook.addWorksheet(result._id);
         var records =   formater.convertHeadToAoA(result,headerKeys);
@@ -37,7 +39,7 @@ data.then((results)=>{
         });
 
         var bodyRecords = formater.convertBodyToAoA(result,headerKeys);
-        worksheet.getRow(10).values=bodyRecords[0] ;
+        worksheet.getRow(12).values=bodyRecords[0] ;
         var headerColumns=[] ; 
         bodyRecords[0].forEach((value,index)=>{
             headerColumns.push({ key:value ,width:20,style:{font:{bold:true}}});
@@ -53,7 +55,7 @@ data.then((results)=>{
             });
         })
         
-        workbook.xlsx.writeFile("ExcelJSoutput.xlsx").then(function() {
+        workbook.xlsx.writeFile('./output/'+result._id+'.xlsx').then(function() {
                 console.log("done writting ");
         });
 
